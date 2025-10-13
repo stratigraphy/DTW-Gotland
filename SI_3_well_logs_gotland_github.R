@@ -68,7 +68,7 @@ library(gert)
 
 # Clone the repo to a temp directory
 
-Sys.setenv(GITHUB_PAT = "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")
+Sys.setenv(GITHUB_PAT = "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")
 pat <- Sys.getenv("GITHUB_PAT")
 
 
