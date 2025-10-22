@@ -68,7 +68,7 @@ library(gert)
 
 # Clone the repo to a temp directory
 
-Sys.setenv(GITHUB_PAT = "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")
+Sys.setenv(GITHUB_PAT = "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")
 pat <- Sys.getenv("GITHUB_PAT")
 
 
@@ -2539,4 +2539,5 @@ lines(dens_mean[,2],dens_mean[,1],col="green",lwd=2)
 
 abline(h = 255, lty = 3, col = "red")
 abline(h = 227, lty = 3, col = "red")
+
 
