@@ -62,14 +62,14 @@ show_callout <- knitr::is_html_output()
 
 
 # ABSTRACT 
-Studies of the Silurian sequence on Gotland have significantly advanced our understanding of Silurian climate dynamics, with much of the research focusing on small outcrops and short cores. Gotland has an extensive network of abandoned oil and gas wells. Most of these include gamma-ray well logs, which have not yet been fully utilised for their stratigraphic value. While the Ordovician succession has been successfully correlated using these well logs, the correlation for the Silurian succession has yet to be fully realised. The present study addresses some of the limitations of correlations performed using Dynamical Time Warping (DTW) by combining DTW with Barycenter Averaging (DBA). This enables a semi-automated correlation of the Silurian well-logs over a ~60 km-long transect and the subdivision of gamma-ray log logs into parts that can be linked with their lithostratigraphic surface counterparts. Additionally, we tracked changes in gamma-ray logs associated with these subsurface units, providing new insights into biogeochemical events (e.g., δ¹³C excursions) previously mapped only at the surface of Gotland. Our results demonstrate the application of a DTW/DBA-based workflow for stratigraphic correlation and highlight the potential to integrate subsurface well-log data to refine Silurian stratigraphy on Gotland.
+Studies of the Silurian sequence on Gotland have significantly advanced our understanding of Silurian climate dynamics, with much of the research focusing on small outcrops and short cores. Gotland has an extensive network of abandoned oil and gas wells. Most of these include gamma-ray well logs, which have not yet been fully utilised for their stratigraphic value. While the Ordovician succession has been successfully correlated using these well logs, the correlation for the Silurian succession has yet to be fully realised. The present study addresses some limitations of Dynamic Time Warping (DTW) correlations by combining DTW with Barycenter Averaging (DBA). The workflow advances existing DTW/DBA approaches by integrating geologically informed pre-stretching with iterative DBA reference-curve construction; together, this enabled the drawing of geologically coherent and internally consistent correlations across multiple wells. The new workflow enabled semi-automated correlation of Silurian well logs over a ~60 km transect. The resulting correlations refine Gotland’s Silurian subsurface architecture by resolving fifteen stratigraphic units, identifying laterally persistent gamma-ray motifs linked to δ¹³C excursions, and revealing local unconformities. This correlation framework extends surface-mapped stratigraphy and biogeochemical events into the subsurface, clarifying how Silurian δ¹³C excursions are expressed in well-log motifs on a basinal scale. Using Gotland as a case study, our results demonstrate how a DTW/DBA-based workflow can integrate subsurface well-log data to produce coherent stratigraphic correlations, offering a broadly applicable and readily transferable approach for use in other basins. 
 
 # INTRODUCTION
 
 The goal of this paper is twofold. First, introduce a new quasi-automated workflow for well-log correlation that leverages the DTW algorithm with Barycenter Averaging (DBA). Secondly, to apply and test this workflow on a set of gamma-ray well logs from Gotland, Sweden, to improve the well-to-well correlations, thereby enabling a more detailed understanding of the subsurface framework of the Silurian succession beneath Gotland.
 Geophysical well logs are an indispensable tool for geoscience, enabling the understanding of subsurface stratigraphy, lithological changes, and depositional facies. Closely spaced well logs enable higher-resolution reconstruction of sedimentary successions than is achievable with seismic reflection methods. Well-log-based correlations are often performed manually, a time-intensive and subjective process. This limitation highlights the need for automated workflows to efficiently analyse large datasets. Dynamic time warping (DTW) has emerged as a powerful algorithm for this purpose, offering efficient correlation across very different records, in complex stratigraphic setting [@linemanWellWellLog1987; @fangComputeraidedWellLog1992; @zorasterCurveAlignmentWelltoWell2004; @hladilDynamicTimewarpingApproach2010; @lallierRelevanceStochasticStratigraphic2012; @lallierUncertaintyAssessmentStratigraphic2016; @wheelerAutomaticSimultaneousCorrelation2015; @wuIncrementalCorrelationMultiple2018; @grantRapidReservoirModeling2018; @bavilleComputerassistedStochasticMultiwell2022; @sylvesterAutomatedMultiwellStratigraphic2023; @nieminskiTurbiditeCorrelationPaleoseismology2024;@hagenDynamicTimeWarping2020; @hagenDynamicTimeWarping2023; @HAGEN2024112321].
 
-By aligning time-equivalent strata across diverse logs, DTW can streamline well-log correlation and improve the resolution of subsurface interpretations. A major drawback op applying DTW to multiple records it that it might produce inconsistent correlations when extended across multiple wells, also known as the DTW open-loop problem [ @sylvesterAutomatedMultiwellStratigraphic2023]. To address this, three general strategies have emerged for correlating stratigraphic records using DTW. The first approach propagates stratigraphic surfaces from a single reference curve [@wuIncrementalCorrelationMultiple2018; @hayLibraryEarlyCambrian2019; @hagenDynamicTimeWarping2020; @hagenDynamicTimeWarping2023; @HAGEN2024112321]. This method depends heavily on the accuracy of the reference curve, as any errors are propagated throughout the correlation network. The second strategy performs pairwise correlations between records, followed by a global realignment to ensure consistency [@wheelerSimultaneousCorrelationMultiple2014; @sylvesterAutomatedMultiwellStratigraphic2023; @nieminskiTurbiditeCorrelationPaleoseismology2024].
+By aligning time-equivalent strata across diverse logs, DTW can streamline well-log correlation and improve the resolution of subsurface interpretations. A major drawback of applying DTW to multiple records it that it might produce inconsistent correlations when extended across multiple wells, also known as the DTW open-loop problem [ @sylvesterAutomatedMultiwellStratigraphic2023]. To address this, three general strategies have emerged for correlating stratigraphic records using DTW. The first approach propagates stratigraphic surfaces from a single reference curve [@wuIncrementalCorrelationMultiple2018; @hayLibraryEarlyCambrian2019; @hagenDynamicTimeWarping2020; @hagenDynamicTimeWarping2023; @HAGEN2024112321]. This method depends heavily on the accuracy of the reference curve, as any errors are propagated throughout the correlation network. The second strategy performs pairwise correlations between records, followed by a global realignment to ensure consistency [@wheelerSimultaneousCorrelationMultiple2014; @sylvesterAutomatedMultiwellStratigraphic2023; @nieminskiTurbiditeCorrelationPaleoseismology2024].
 A drawback of this technique is that local mismatches in pairwise correlations can propagate errors during global realignment, leading to geologically unrealistic outcomes. This approach can also be computationally intensive, depending on the algorithm used. The third method iteratively refines correlations to converge on a consistent solution [@lallierUncertaintyAssessmentStratigraphic2016; @edwardsUncertaintyManagementStratigraphic2018].
 Although this improves global consistency, it may converge on locally optimal but unrealistic results, particularly without stratigraphic constraints such as biozonations. Like the second approach, it can also be computationally demanding.
 
@@ -679,7 +679,7 @@ data <- matrix(data = NA, nrow = nrow(prestreched_data[[1]]))
 #nrow(prestreched_data[[1]])
 
 
-#fill the matrix with the pre-stretched data which was also normalized (-1 to 1)
+#fill the matrix with the pre-stretched data which was also normalised (-1 to 1)
 for (i in 1:length(prestreched_data)) {
   data_1 <- prestreched_data[[i]]
   data_1 <- data_1[, c(1, 2)]
@@ -832,7 +832,7 @@ Plot the well-logs pre and post stretching including the corrrelation lines/poin
     prestreched_data[[1]][, c(1)]/10,
     type = "l",
     xlim = c(0, length(data_ls) * 0.75),
-    ylim = c(4500/10, 0),xaxt="n",xlab="",ylab="normalized (depth scale)"
+    ylim = c(4500/10, 0),xaxt="n",xlab="",ylab="Normalised (depth scale)"
   )
   for (i in 2:length(data_ls)) {
     lines(x = prestreched_data[[i]][, c(2)] + (i * (0.75) - 1),
@@ -933,15 +933,15 @@ par(mar = c(4, 4, 0.5, 0))
 plot(
   cbind(prestreched_data[[1]][1], dtw_avg),
   type = "l",
-  xlab = "normalized depth scale",
-  ylab = "normalized gamma=ray"
+  xlab = "Normalised depth scale",
+  ylab = "Normalised gamma=ray"
 )
 lines(a, col = "red", lwd = 2)
 
 plot(a_nl,
      type = "l",
-     xlab = "normalized depth scale",
-     ylab = "normalized gamma=ray")
+     xlab = "Normalised depth scale",
+     ylab = "Normalised gamma=ray")
 
 points(a_nl[tie_points[, 1], ],
        col = "blue",
@@ -952,8 +952,8 @@ plot(
   cbind(prestreched_data[[1]][1], dtw_avg),
   type = "l",
   lwd = 2,
-  xlab = "normalized depth scale",
-  ylab = "normalized gamma=ray"
+  xlab = "Normalised depth scale",
+  ylab = "Normalised gamma=ray"
 )
 lines(a, col = "red", lwd = 2)
 points(a[tie_points[, 1], ],
@@ -1365,7 +1365,7 @@ plot all the correlations lines in the transect.
 #| message: false
 #| warning: false
 #| echo: true
-#| fig.cap: "Figure 4B.  correlation lines drawn between the correlation points. B. The well-logs along the A’-A’’ transect and their DBA-derived correlation points and lines. The X-axis is kilometres along the transect. The normalized logs are plotted with the same amplitude scale, while maintaining their distance along the profile."
+#| fig.cap: "Figure 4B.  correlation lines drawn between the correlation points. B. The well-logs along the A’-A’’ transect and their DBA-derived correlation points and lines. The X-axis is kilometres along the transect. The normalised logs are plotted with the same amplitude scale, while maintaining their distance along the profile."
 #plot all the correlations lines in the transect ####
 {
 layout.matrix <- matrix(1,
@@ -2057,7 +2057,7 @@ plot(
   y = c(0, max(ylims)),
   col = "white",
   xlab = "",
-  ylab = "normalized depth (m)",
+  ylab = "Normalised depth (m)",
   xaxt = "n",
   xaxs = "i",
   yaxs = "i",
